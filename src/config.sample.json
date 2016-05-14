@@ -1,4 +1,24 @@
 {
+  "users":[
+    {
+      "name":"Achan",
+      "pass":"98c2d8e9eb6b5bd8948a4ebfc08b2347",
+      "admin":true,
+      "can-create-projects":true,
+      "projects":[
+        "project1",
+        "project2"
+      ]
+    },{
+      "name":"Bchan",
+      "pass":"98c2d8e9eb6b5bd8948a4ebfc1232347",
+      "admin":false,
+      "can-create-projects":false,
+      "projects":[
+        "project2",
+      ]
+    }
+  ],
   "projects":[
     {
       "name":"project1",
