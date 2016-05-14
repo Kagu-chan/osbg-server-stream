@@ -240,3 +240,5 @@ temp/
 logs/
 migrate.json
 *ips.cfg
+config.json
+log.txt

@@ -2,6 +2,8 @@
 	$requestString = "[" . date("Y.m.d-G:i.s") . "][" . $_SERVER['REMOTE_ADDR'] . "] ?" . $_SERVER['QUERY_STRING'] . " [" . $_SERVER['HTTP_USER_AGENT'] . "]";
 	file_put_contents('log.txt', file_get_contents('log.txt') . "\n" . $requestString);
 
+	$configuration = json_decode(file_get_contents("config.json"), TRUE);
+
 	function ciao($arr, $message="Unknown Message!") {
 		if (empty($arr["message"])) $arr["message"] = $message;
 
@@ -38,10 +40,19 @@
 			if (is_dir($dir . DIRECTORY_SEPARATOR . $value)) {
 				$res[$value] = dirToArray($dir . DIRECTORY_SEPARATOR . $value);
 			} else {
-				$res[] = $value; 
+				$res[] = $value;
 			}
 		}
 		return $res;
+	}
+
+	function projectExist($name, $configuration) {
+		foreach ($configuration["projects"] as $i => $project) {
+			if ($project["name"] === $name) {
+				return $i;
+			}
+		}
+		return -1;
 	}
 
 	$result = array("success" => FALSE);
@@ -52,11 +63,12 @@
 
 	$project = filter_input(INPUT_GET, "p");
 
-	if (!file_exists($project)) ciao($result, "Unknown Project!");
-	$result["versions"] = array_diff(scandir($project), array('..', '.', 'v.json', 'v0'));
-	$data = json_decode(file_get_contents("$project/v.json"), TRUE);
+	$id = projectExist($project, $configuration);
+	if ($id < 0) ciao($result, "Unknown Project!");
+	$prj = $configuration["projects"][$id];
 
-	$result["version"] = $data["version"];
+	$result["versions"] = array_diff(scandir($configuration["projects"][$id]["location"]), array('..', '.', 'v.json', 'v0'));
+	$result["version"] = $prj["version"];
 
 	if (filter_input(INPUT_GET, "current") == "1") {
 		$d = $result["version"];
@@ -71,11 +83,11 @@
 		ciao($result, "Latest Version");
 	}
 
-	$dir = implode(DIRECTORY_SEPARATOR, array(".", $project, "v$request"));
+	$dir = implode(DIRECTORY_SEPARATOR, array($prj['location'], "v$request"));
 
 	if (!file_exists($dir)) ciao($result, "Unknown Version $request");
 
-	$files = arrayToList(dirToArray($dir)); // array_diff(scandir($dir), array('..', '.'));
+	$files = arrayToList(dirToArray($dir));
 
 	$dl = filter_input(INPUT_GET, "f");
 	if (empty($dl)) {
