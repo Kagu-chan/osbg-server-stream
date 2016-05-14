@@ -1,0 +1,13 @@
+{
+  "projects":[
+    {
+      "name":"project1",
+      "location":"projects/project1",
+      "version":"0.4"
+    },{
+      "name":"project2",
+      "location":"projects/project2",
+      "version":"0.4.3"
+    }
+  ]
+}

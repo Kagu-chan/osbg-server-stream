@@ -2,6 +2,9 @@
 	$requestString = "[" . date("Y.m.d-G:i.s") . "][" . $_SERVER['REMOTE_ADDR'] . "] ?" . $_SERVER['QUERY_STRING'] . " [" . $_SERVER['HTTP_USER_AGENT'] . "]";
 	file_put_contents('log.txt', file_get_contents('log.txt') . "\n" . $requestString);
 
+	$configuration = json_decode(file_get_contents("config.json"), TRUE);
+	var_dump($configuration); exit();
+
 	function ciao($arr, $message="Unknown Message!") {
 		if (empty($arr["message"])) $arr["message"] = $message;
 
@@ -38,7 +41,7 @@
 			if (is_dir($dir . DIRECTORY_SEPARATOR . $value)) {
 				$res[$value] = dirToArray($dir . DIRECTORY_SEPARATOR . $value);
 			} else {
-				$res[] = $value; 
+				$res[] = $value;
 			}
 		}
 		return $res;
